@@ -61,8 +61,8 @@ public class DataHandling {
             Pattern datePattern = Pattern.compile("\\s(\\d{4}-\\d\\d-\\d\\d)");     // Finds all the dates
             Pattern descriptionPattern = Pattern.compile("x?\\s?(\\([A-Z]\\))?\\s?(\\d{4}-\\d{2}-\\d{2}\\s?){0,2}(.*)");
 //            Pattern descriptionPattern = Pattern.compile("(.*)");
-            Pattern tagPattern = Pattern.compile("(\\+[\\S]+)");                      // Finds any tags within the description
-            Pattern contextPattern = Pattern.compile("(@[\\S]+)");                    // Finds any context tags within the description
+            Pattern tagPattern = Pattern.compile("\\s(\\+[\\S]+)");                      // Finds any tags within the description
+            Pattern contextPattern = Pattern.compile("\\s(@[\\S]+)");                    // Finds any context tags within the description
 
             String[] lines = text.split(System.getProperty("line.separator"));
             for (int i = 0; i < lines.length; i++) {
@@ -72,7 +72,7 @@ public class DataHandling {
                 String Creation = null;
                 String Description;
                 ArrayList<String> tags = new ArrayList<>();
-                String context = null;
+                ArrayList<String> context = new ArrayList<>();
 
                 if (completedPattern.matcher(lines[i]).find()) Completed = true;
                 else Completed = false;
@@ -102,7 +102,7 @@ public class DataHandling {
                 Log.d(TAG, "Dates = " + Completion + " and " + Creation);
 
                 // Pull out the description
-                Log.d(TAG, "line is " + lines[i].toString());
+                Log.d(TAG, "line is " + lines[i]);
                 Matcher descriptionMatch = descriptionPattern.matcher(lines[i]);
                 if (descriptionMatch.find()) Description = descriptionMatch.group(3);
                 else Description = "--Invalid todo.txt format--";
@@ -117,8 +117,8 @@ public class DataHandling {
 
                 // Finds context tag in description
                 Matcher contextMatch = contextPattern.matcher(lines[i]);
-                if (contextMatch.find())
-                    context = contextMatch.group(1);
+                while (contextMatch.find())
+                    context.add(contextMatch.group(1));
 
                 todos.add(new ToDoItem(Completed, Priority, Completion, Creation, Description, tags, context));
             }

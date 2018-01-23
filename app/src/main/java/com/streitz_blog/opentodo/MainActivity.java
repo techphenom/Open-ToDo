@@ -1,11 +1,11 @@
 package com.streitz_blog.opentodo;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -18,14 +18,15 @@ import android.view.MenuItem;
 import android.view.View;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     public static final int REQUEST_CODE_WRITE_TO_FILE = 1;
 
-    File location = new File(android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "todo.txt");
-    List<ToDoItem> todos;
+    static File location = new File(android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "todo.txt");
+    public static List<ToDoItem> todos = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +46,14 @@ public class MainActivity extends AppCompatActivity {
                         REQUEST_CODE_WRITE_TO_FILE);
         }
 
-        RecyclerView rvToDoList = findViewById(R.id.toDoList);
+        final RecyclerView rvToDoList = findViewById(R.id.toDoList);
         String toDoData = DataHandling.getData(location, getApplicationContext());
         Log.d(TAG, "tododata = " + toDoData);
-        todos = DataHandling.parseData(toDoData);
+        for (ToDoItem item: DataHandling.parseData(toDoData)) {
+            if (!item.getmCompleted()) {
+                todos.add(item);
+            }
+        };
         rvToDoList.setAdapter(new ToDoAdapter(this, todos));
         rvToDoList.setLayoutManager(new LinearLayoutManager(this));
 
@@ -56,10 +61,18 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(MainActivity.this, AddEditActivity.class);
+                startActivity(intent);
             }
         });
+
+//        CheckBox checkBox = findViewById(R.id.checkBox);
+//        checkBox.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                checkBox.
+//            }
+//        });
     }
 
     @Override

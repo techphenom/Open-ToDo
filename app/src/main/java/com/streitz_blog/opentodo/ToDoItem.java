@@ -16,9 +16,9 @@ class ToDoItem {
     private String mCreation;
     private String mDescription;
     private List<String> mTags;
-    private String mContext;
+    private List<String> mContext;
 
-    public ToDoItem(boolean mCompleted, String mPriority, String mCompletion, String mCreation, String mDescription, List<String> mTags, String mContext) {
+    public ToDoItem(boolean mCompleted, String mPriority, String mCompletion, String mCreation, String mDescription, List<String> mTags, List<String> mContext) {
         this.mCompleted = mCompleted;
         this.mPriority = mPriority;
         this.mCompletion = mCompletion;
@@ -52,8 +52,12 @@ class ToDoItem {
         return mTags;
     }
 
-    public String getmContext() {
+    public List<String> getmContext() {
         return mContext;
+    }
+
+    public void completeTodo() {
+        mCompleted = true;
     }
 
 

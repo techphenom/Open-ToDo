@@ -7,13 +7,18 @@
     <CheckBox
         android:id="@+id/checkBox"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
+        android:layout_marginTop="3dp" />
 
     <TextView
         android:id="@+id/toDoDescription"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
+        android:layout_marginTop="3dp"
         android:layout_weight="1"
+        android:textSize="18sp"
         android:textStyle="bold"
         tools:text="This is an example to do!" />
 </LinearLayout>
