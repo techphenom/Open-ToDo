@@ -8,9 +8,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,32 +29,32 @@ public class AddEditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_edit);
 
         final EditText editDescription = findViewById(R.id.editDescription);
-        final EditText editProject = findViewById(R.id.editProject);
+        final EditText editProject = (EditText) findViewById(R.id.editProject);
         final EditText editContext = findViewById(R.id.editContext);
 
         Button save = findViewById(R.id.buttonSave);
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                creation = new SimpleDateFormat("yyyy-mm-dd", Locale.getDefault()).format(new Date());
+                creation = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
                 description = editDescription.getText().toString();
-                StringBuilder newTodo = new StringBuilder(creation + " " + description + " ");
+                StringBuilder newTodo = new StringBuilder("\n"+ creation + " " + description);
 
-                for (String x: editProject.toString().split(",")
+                for (String x: editProject.getText().toString().split(",")
                      ) {
-                    newTodo.append(" +" + x);
+                    if (x.length() > 0)newTodo.append(" +" + x.trim());
                 }
-                for (String c: editContext.toString().split(",")
+                for (String c: editContext.getText().toString().split(",")
                         ) {
-                    newTodo.append(" @" + c);
+                    if (c.length() > 0) newTodo.append(" @" + c.trim());
                 }
 
 
                 try{
-                    FileOutputStream fileOutputStream = new FileOutputStream(MainActivity.location, true);
-                    ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-                    objectOutputStream.writeBytes(newTodo.toString());
-                    objectOutputStream.close();
+                    FileWriter fileWriter = new FileWriter(MainActivity.location, true);
+                    Log.d(TAG, "stringbuilder is " + newTodo);
+                    fileWriter.write(newTodo.toString());
+                    fileWriter.close();
                 } catch (FileNotFoundException e) {
                     Log.d(TAG, "Didn't write file");
                 } catch (IOException err) {
