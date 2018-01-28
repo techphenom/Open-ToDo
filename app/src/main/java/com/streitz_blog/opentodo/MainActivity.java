@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_CODE_WRITE_TO_FILE = 1;
 
     static File location = new File(android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "todo.txt");
-    public static List<ToDoItem> todos = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        List<ToDoItem> todos = new ArrayList<>();
 
         // Check for Write Permissions then request them if not.
         if (ContextCompat.checkSelfPermission(this,
@@ -47,10 +48,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         final RecyclerView rvToDoList = findViewById(R.id.toDoList);
-        String toDoData = DataHandling.getData(location, getApplicationContext());
+        String toDoData = DataHandling.getData(location);
         Log.d(TAG, "tododata = " + toDoData);
         for (ToDoItem item: DataHandling.parseData(toDoData)) {
-            if (!item.getmCompleted()) {
+            if (item.getmCompleted() == null) {
                 todos.add(item);
             }
         };

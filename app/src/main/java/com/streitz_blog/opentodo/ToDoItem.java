@@ -10,7 +10,7 @@ import java.util.List;
 
 class ToDoItem {
 
-    private boolean mCompleted;
+    private String mCompleted;
     private String mPriority;
     private String mCompletion;
     private String mCreation;
@@ -18,7 +18,7 @@ class ToDoItem {
     private List<String> mTags;
     private List<String> mContext;
 
-    public ToDoItem(boolean mCompleted, String mPriority, String mCompletion, String mCreation, String mDescription, List<String> mTags, List<String> mContext) {
+    public ToDoItem(String mCompleted, String mPriority, String mCompletion, String mCreation, String mDescription, List<String> mTags, List<String> mContext) {
         this.mCompleted = mCompleted;
         this.mPriority = mPriority;
         this.mCompletion = mCompletion;
@@ -28,7 +28,7 @@ class ToDoItem {
         this.mContext = mContext;
     }
 
-    public boolean getmCompleted() {
+    public String getmCompleted() {
         return mCompleted;
     }
 
@@ -57,7 +57,7 @@ class ToDoItem {
     }
 
     public void completeTodo() {
-        mCompleted = true;
+        mCompleted = "x";
     }
 
 
