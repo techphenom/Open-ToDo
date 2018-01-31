@@ -8,8 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by Russell Streitz on 1/9/18.
@@ -19,7 +20,7 @@ import java.util.List;
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoViewHolder> {
     private static final String TAG = "ToDoAdapter";
 
-    private List<ToDoItem> mToDos;
+    private ArrayList<ToDoItem> mTodos;
     private Context mContext;
 
     public class ToDoViewHolder extends RecyclerView.ViewHolder {
@@ -34,9 +35,9 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoViewHolder
         }
     }
 
-    public ToDoAdapter(Context context, List<ToDoItem> todos) {
+    public ToDoAdapter(Context context, ArrayList<ToDoItem> todos) {
         mContext = context;
-        mToDos = todos;
+        mTodos = todos;
     }
 
     private Context getContext() {
@@ -54,15 +55,25 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoViewHolder
     @Override
     public void onBindViewHolder(ToDoViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder: starts");
+        final int pos = position;
 
-        ToDoItem todo = mToDos.get(position);
+        ToDoItem todo = mTodos.get(pos);
         TextView textView = holder.toDoDescription;
         textView.setText(todo.getmDescription());
         CheckBox checkBox = holder.checkBox;
+        checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(view.getContext(), "You clicked checkbox at " + pos, Toast.LENGTH_SHORT).show();
+                mTodos.get(pos).completeTodo();
+                DataHandling.updateFile(MainActivity.location, mTodos);
+                ((MainActivity) view.getContext()).onResume();
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return mToDos.size();
+        return mTodos.size();
     }
 }

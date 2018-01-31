@@ -11,7 +11,6 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -20,8 +19,6 @@ public class AddEditActivity extends AppCompatActivity {
 
     private String creation;
     private String description;
-    private ArrayList<String> projects = new ArrayList<>();
-    private ArrayList<String> contexts = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +26,7 @@ public class AddEditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_edit);
 
         final EditText editDescription = findViewById(R.id.editDescription);
-        final EditText editProject = (EditText) findViewById(R.id.editProject);
+        final EditText editProject = findViewById(R.id.editProject);
         final EditText editContext = findViewById(R.id.editContext);
 
         Button save = findViewById(R.id.buttonSave);

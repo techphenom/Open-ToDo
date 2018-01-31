@@ -63,12 +63,28 @@ class ToDoItem {
 
     @Override
     public String toString() {
-        return "ToDoItem{" +
-                "mCompleted='" + mCompleted + '\'' +
-                ", mPriority='" + mPriority + '\'' +
-                ", mCompletion='" + mCompletion + '\'' +
-                ", mCreation='" + mCreation + '\'' +
-                ", mDescription='" + mDescription + '\'' +
-                '}';
+        StringBuilder todo = new StringBuilder();
+        if (mCompleted != null) {
+            todo.append(mCompleted);
+            todo.append(" ");
+        }
+        if (mPriority != null) {
+            todo.append(mPriority);
+            todo.append(" ");
+        }
+        if (mCompletion != null) {
+            todo.append(mCompletion);
+            todo.append(" ");
+        }
+        if (mCreation != null) {
+            todo.append(mCreation);
+            todo.append(" ");
+        }
+        if (mDescription != null) {
+            todo.append(mDescription);
+            todo.append(" ");
+        };
+
+        return todo.toString().trim();
     }
 }

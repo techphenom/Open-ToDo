@@ -53,7 +53,7 @@ public class DataHandling {
         List<ToDoItem> todos = new ArrayList<ToDoItem>();
 
         if (!text.isEmpty()) {
-            Pattern todoPattern = Pattern.compile("(x)?\\s?(\\([A-Z]\\))?\\s?(\\d{4}-\\d{2}-\\d{2}\\s?)?\\s?(\\d{4}-\\d{2}-\\d{2}\\s?)?(.*)");
+            Pattern todoPattern = Pattern.compile("(x)?\\s?(\\([A-Z]\\))?\\s?(\\d{4}-\\d{2}-\\d{2})?\\s?(\\d{4}-\\d{2}-\\d{2})?\\s?(.*)");
             Pattern tagPattern = Pattern.compile("\\s\\+([\\S]+)");                      // Finds any tags within the description
             Pattern contextPattern = Pattern.compile("\\s@([\\S]+)");                    // Finds any context tags within the description
 
@@ -114,6 +114,26 @@ public class DataHandling {
         try {
             FileWriter fileWriter = new FileWriter(location);
             fileWriter.write("Add some todos!!!");
+            fileWriter.close();
+        } catch (FileNotFoundException e) {
+            Log.d(TAG, "Didn't write file");
+        } catch (IOException err) {
+            Log.d(TAG, "getData: didn't write file");
+        }
+    }
+    static void updateFile(File location, ArrayList<ToDoItem> incompleteList) {
+        try {
+            FileWriter fileWriter = new FileWriter(location);
+            StringBuilder contentsToWrite = new StringBuilder();
+            List<ToDoItem> allTodosList = new ArrayList<>(incompleteList);
+            allTodosList.addAll(MainActivity.completedList);
+            for (ToDoItem item:allTodosList
+                 ) {
+                contentsToWrite.append(item.toString());
+                contentsToWrite.append("\n");
+            }
+            contentsToWrite.deleteCharAt(contentsToWrite.length() - 1);
+            fileWriter.write(contentsToWrite.toString());
             fileWriter.close();
         } catch (FileNotFoundException e) {
             Log.d(TAG, "Didn't write file");
