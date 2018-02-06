@@ -10,7 +10,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,6 +20,32 @@ import java.util.regex.Pattern;
 
 public class DataHandling {
     private static final String TAG = "DataHandling";
+    private ArrayList<ToDoItem> allTodos = new ArrayList<>();
+    private ArrayList<ToDoItem> incompleteTodos = new ArrayList<>();
+    private ArrayList<ToDoItem> completedTodos = new ArrayList<>();
+
+    public DataHandling() {
+        allTodos = parseData(getData(MainActivity.location));
+        for (ToDoItem item: allTodos) {
+            if (item.getmCompleted() == null) {
+                incompleteTodos.add(item);
+            } else {
+                completedTodos.add(item);
+            }
+        };
+    }
+
+    public ArrayList<ToDoItem> getCompleted() {
+        return completedTodos;
+    }
+
+    public ArrayList<ToDoItem> getIncomplete() {
+        return incompleteTodos;
+    }
+
+    public ArrayList<ToDoItem> getAllTodos() {
+        return allTodos;
+    }
 
     public static String getData(File todoTxtLocation) {
         Log.d(TAG, "DataHandling.getData: starts. todo.txt location = '" + todoTxtLocation + "'");
@@ -48,63 +73,65 @@ public class DataHandling {
         return text.toString();
     }
 
-    public static List<ToDoItem> parseData(String text) {
+    public ArrayList<ToDoItem> parseData(String text) {
         Log.d(TAG, "parseData: starts");
-        List<ToDoItem> todos = new ArrayList<ToDoItem>();
+        ArrayList<ToDoItem> todos = new ArrayList<ToDoItem>();
 
         if (!text.isEmpty()) {
-            Pattern todoPattern = Pattern.compile("(x)?\\s?(\\([A-Z]\\))?\\s?(\\d{4}-\\d{2}-\\d{2})?\\s?(\\d{4}-\\d{2}-\\d{2})?\\s?(.*)");
+            Pattern todoPattern = Pattern.compile("^(x)?\\s?(\\([A-Z]\\))?\\s?(\\d{4}-\\d{2}-\\d{2})?\\s?(\\d{4}-\\d{2}-\\d{2})?\\s?(.*)");
             Pattern tagPattern = Pattern.compile("\\s\\+([\\S]+)");                      // Finds any tags within the description
             Pattern contextPattern = Pattern.compile("\\s@([\\S]+)");                    // Finds any context tags within the description
 
             String[] lines = text.split(System.getProperty("line.separator"));
             for (int i = 0; i < lines.length; i++) {
-                String Completed = null;
-                String Priority = null;
-                String Completion = null;
-                String Creation = null;
-                String Description = null;
-                ArrayList<String> tags = new ArrayList<>();
-                ArrayList<String> context = new ArrayList<>();
+                if (!lines[i].isEmpty()) {
+                    String Completed = null;
+                    String Priority = null;
+                    String Completion = null;
+                    String Creation = null;
+                    String Description = null;
+                    ArrayList<String> tags = new ArrayList<>();
+                    ArrayList<String> context = new ArrayList<>();
 
-                Matcher match = todoPattern.matcher(lines[i]);
+                    Matcher match = todoPattern.matcher(lines[i]);
 
-                if (match.find()) {
-                    Completed = match.group(1);
-                    Log.d(TAG, "completedMatcher = " + Completed);
+                    if (match.find()) {
+                        Completed = match.group(1);
+                        Log.d(TAG, "completedMatcher = " + Completed);
 
-                    Priority = match.group(2);
-                    Log.d(TAG, "PriorityMatcher = " + Priority);
+                        Priority = match.group(2);
+                        Log.d(TAG, "PriorityMatcher = " + Priority);
 
-                    //Find the dates and assign them to the right place.
-                    if (match.group(4) == null && match.group(3) != null)
-                        Creation = match.group(3);
-                    else {
-                        Completion = match.group(3);
-                        Creation = match.group(4);
+                        //Find the dates and assign them to the right place.
+                        if (match.group(4) == null && match.group(3) != null)
+                            Creation = match.group(3);
+                        else {
+                            Completion = match.group(3);
+                            Creation = match.group(4);
+                        }
+                        Log.d(TAG, "Dates = " + Completion + " and " + Creation);
+
+                        Description = match.group(5);
+                        Log.d(TAG, "Description = " + Description);
+                    } else {
+                        Log.d(TAG, "--- Invalid todo.txt format ---");
                     }
-                    Log.d(TAG, "Dates = " + Completion + " and " + Creation);
 
-                    Description = match.group(5);
-                    Log.d(TAG, "Description = " + Description);
-                } else {
-                    Log.d(TAG, "--- Invalid todo.txt format ---");
+                    // Finds tags and adds them to the List 'tags'
+                    Matcher tagMatch = tagPattern.matcher(lines[i]);
+                    while (tagMatch.find()) {
+                        tags.add(tagMatch.group(1));
+                    }
+                    Log.d(TAG, "tags = " + tags.toString());
+
+                    // Finds context tag in description
+                    Matcher contextMatch = contextPattern.matcher(lines[i]);
+                    while (contextMatch.find())
+                        context.add(contextMatch.group(1));
+                    Log.d(TAG, "contexts = " + context.toString());
+
+                    todos.add(new ToDoItem(Completed, Priority, Completion, Creation, Description, tags, context));
                 }
-
-                // Finds tags and adds them to the List 'tags'
-                Matcher tagMatch = tagPattern.matcher(lines[i]);
-                while (tagMatch.find()) {
-                    tags.add(tagMatch.group(1));
-                }
-                Log.d(TAG, "tags = " + tags.toString());
-
-                // Finds context tag in description
-                Matcher contextMatch = contextPattern.matcher(lines[i]);
-                while (contextMatch.find())
-                    context.add(contextMatch.group(1));
-                Log.d(TAG, "contexts = " + context.toString());
-
-                todos.add(new ToDoItem(Completed, Priority, Completion, Creation, Description, tags, context));
             }
         }
         return todos;
@@ -113,7 +140,6 @@ public class DataHandling {
     private static void createFile(File location) {
         try {
             FileWriter fileWriter = new FileWriter(location);
-            fileWriter.write("Add some todos!!!");
             fileWriter.close();
         } catch (FileNotFoundException e) {
             Log.d(TAG, "Didn't write file");
@@ -121,13 +147,11 @@ public class DataHandling {
             Log.d(TAG, "getData: didn't write file");
         }
     }
-    static void updateFile(File location, ArrayList<ToDoItem> incompleteList) {
+    public void updateFile(File location) {
         try {
             FileWriter fileWriter = new FileWriter(location);
             StringBuilder contentsToWrite = new StringBuilder();
-            List<ToDoItem> allTodosList = new ArrayList<>(incompleteList);
-            allTodosList.addAll(MainActivity.completedList);
-            for (ToDoItem item:allTodosList
+            for (ToDoItem item: allTodos
                  ) {
                 contentsToWrite.append(item.toString());
                 contentsToWrite.append("\n");

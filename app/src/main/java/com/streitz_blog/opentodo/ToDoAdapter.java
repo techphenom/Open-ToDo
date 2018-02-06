@@ -10,8 +10,6 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-
 /**
  * Created by Russell Streitz on 1/9/18.
  * Adapter for the RecyclerView
@@ -20,7 +18,7 @@ import java.util.ArrayList;
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoViewHolder> {
     private static final String TAG = "ToDoAdapter";
 
-    private ArrayList<ToDoItem> mTodos;
+    private DataHandling mTodos;
     private Context mContext;
 
     public class ToDoViewHolder extends RecyclerView.ViewHolder {
@@ -35,7 +33,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoViewHolder
         }
     }
 
-    public ToDoAdapter(Context context, ArrayList<ToDoItem> todos) {
+    public ToDoAdapter(Context context, DataHandling todos) {
         mContext = context;
         mTodos = todos;
     }
@@ -57,7 +55,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoViewHolder
         Log.d(TAG, "onBindViewHolder: starts");
         final int pos = position;
 
-        ToDoItem todo = mTodos.get(pos);
+        ToDoItem todo = mTodos.getIncomplete().get(pos);
         TextView textView = holder.toDoDescription;
         textView.setText(todo.getmDescription());
         CheckBox checkBox = holder.checkBox;
@@ -65,8 +63,8 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoViewHolder
             @Override
             public void onClick(View view) {
                 Toast.makeText(view.getContext(), "You clicked checkbox at " + pos, Toast.LENGTH_SHORT).show();
-                mTodos.get(pos).completeTodo();
-                DataHandling.updateFile(MainActivity.location, mTodos);
+                mTodos.getIncomplete().get(pos).completeTodo();
+                mTodos.updateFile(MainActivity.location);
                 ((MainActivity) view.getContext()).onResume();
             }
         });
@@ -74,6 +72,6 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoViewHolder
 
     @Override
     public int getItemCount() {
-        return mTodos.size();
+        return mTodos.getIncomplete().size();
     }
 }

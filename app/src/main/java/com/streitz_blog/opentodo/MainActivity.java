@@ -18,12 +18,10 @@ import android.view.MenuItem;
 import android.view.View;
 
 import java.io.File;
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     public static final int REQUEST_CODE_WRITE_TO_FILE = 1;
-    public static ArrayList<ToDoItem> completedList = new ArrayList<>();
 
     static File location = new File(android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "todo.txt");
 
@@ -34,6 +32,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Check for Write Permissions then request them if not.
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_CODE_WRITE_TO_FILE);
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -70,34 +78,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ArrayList<ToDoItem> incompleteTodos = new ArrayList<>();
-        ArrayList<ToDoItem> completedTodos = new ArrayList<>();
-        completedList = completedTodos;
-
-        // Check for Write Permissions then request them if not.
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    REQUEST_CODE_WRITE_TO_FILE);
-        }
 
         final RecyclerView rvToDoList = findViewById(R.id.toDoList);
-        String toDoData = DataHandling.getData(location);
-        Log.d(TAG, "tododata = " + toDoData);
-        for (ToDoItem item: DataHandling.parseData(toDoData)) {
-            if (item.getmCompleted() == null) {
-                incompleteTodos.add(item);
-            } else {
-                completedTodos.add(item);
-            }
-        };
-        Log.d(TAG, "completed todos = " + completedTodos);
-        Log.d(TAG, "incomplete todos = " + incompleteTodos);
+        DataHandling toDoData = new DataHandling();
 
-        rvToDoList.setAdapter(new ToDoAdapter(this, incompleteTodos));
+        if (toDoData.getAllTodos().size() == 0)
+                findViewById(R.id.noToDos).setVisibility(View.VISIBLE);
+        else
+            findViewById(R.id.noToDos).setVisibility(View.INVISIBLE);
+
+        Log.d(TAG, "completed todos = " + toDoData.getCompleted());
+        Log.d(TAG, "incomplete todos = " + toDoData.getIncomplete());
+
+        rvToDoList.setAdapter(new ToDoAdapter(this, toDoData));
         rvToDoList.setLayoutManager(new LinearLayoutManager(this));
 
     }
