@@ -15,8 +15,8 @@ import android.widget.Toast;
  * Adapter for the RecyclerView
  */
 
-public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoViewHolder> {
-    private static final String TAG = "ToDoAdapter";
+public class IncompleteAdapter extends RecyclerView.Adapter<IncompleteAdapter.ToDoViewHolder> {
+    private static final String TAG = "IncompleteAdapter";
 
     private DataHandling mTodos;
     private Context mContext;
@@ -33,7 +33,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoViewHolder
         }
     }
 
-    public ToDoAdapter(Context context, DataHandling todos) {
+    public IncompleteAdapter(Context context, DataHandling todos) {
         mContext = context;
         mTodos = todos;
     }
@@ -46,18 +46,26 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoViewHolder
     public ToDoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.d(TAG, "onCreateViewHolder: new view requested");
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View toDoView = inflater.inflate(R.layout.to_do_item, parent, false);
+        View toDoView = inflater.inflate(R.layout.incomplete_to_do, parent, false);
         return new ToDoViewHolder(toDoView);
     }
 
     @Override
     public void onBindViewHolder(ToDoViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder: starts");
-        final int pos = position;
+        Log.d(TAG, "onBindViewHolder context is " + getContext().toString());
+        final int pos = holder.getAdapterPosition();
+        final ToDoItem todo;
 
-        ToDoItem todo = mTodos.getIncomplete().get(pos);
+        todo = mTodos.getIncomplete().get(pos);
         TextView textView = holder.toDoDescription;
         textView.setText(todo.getmDescription());
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(view.getContext(), "You clicked todo at " + pos, Toast.LENGTH_SHORT).show();
+            }
+        });
         CheckBox checkBox = holder.checkBox;
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +76,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoViewHolder
                 ((MainActivity) view.getContext()).onResume();
             }
         });
+
     }
 
     @Override

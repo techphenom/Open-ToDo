@@ -111,7 +111,9 @@ public class DataHandling {
                         }
                         Log.d(TAG, "Dates = " + Completion + " and " + Creation);
 
-                        Description = match.group(5);
+                        String wholeDescription = match.group(5);
+                        String noProjects = tagPattern.matcher(wholeDescription).replaceAll("");
+                        Description = contextPattern.matcher(noProjects).replaceAll("");
                         Log.d(TAG, "Description = " + Description);
                     } else {
                         Log.d(TAG, "--- Invalid todo.txt format ---");

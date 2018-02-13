@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 import java.io.File;
 
@@ -51,6 +52,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        Button button = findViewById(R.id.completed);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, CompletedTodos.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -82,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         final RecyclerView rvToDoList = findViewById(R.id.toDoList);
         DataHandling toDoData = new DataHandling();
 
-        if (toDoData.getAllTodos().size() == 0)
+        if (toDoData.getIncomplete().size() == 0)
                 findViewById(R.id.noToDos).setVisibility(View.VISIBLE);
         else
             findViewById(R.id.noToDos).setVisibility(View.INVISIBLE);
@@ -90,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "completed todos = " + toDoData.getCompleted());
         Log.d(TAG, "incomplete todos = " + toDoData.getIncomplete());
 
-        rvToDoList.setAdapter(new ToDoAdapter(this, toDoData));
+        rvToDoList.setAdapter(new IncompleteAdapter(this, toDoData));
         rvToDoList.setLayoutManager(new LinearLayoutManager(this));
 
     }

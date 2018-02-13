@@ -85,6 +85,20 @@ class ToDoItem {
             todo.append(" ");
         };
 
+        if (!getmTags().isEmpty()) {
+            for (String x : getmTags()) {
+                todo.append("+" + x);
+                todo.append(" ");
+            }
+        }
+
+        if (!getmContext().isEmpty()) {
+            for (String c : getmContext()) {
+                todo.append("@" + c);
+                todo.append(" ");
+            }
+        }
+
         return todo.toString().trim();
     }
 }
