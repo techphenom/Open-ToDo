@@ -1,6 +1,7 @@
 package com.streitz_blog.opentodo;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,6 +31,16 @@ public class IncompleteAdapter extends RecyclerView.Adapter<IncompleteAdapter.To
 
             checkBox = itemView.findViewById(R.id.checkBox);
             toDoDescription = itemView.findViewById(R.id.toDoDescription);
+
+            toDoDescription.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(view.getContext(), mTodos.getIncomplete().get(getAdapterPosition()).toString() , Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getContext(), AddEditActivity.class);
+                    intent.putExtra("position", getAdapterPosition());
+                    getContext().startActivity(intent);
+                }
+            });
         }
     }
 
@@ -60,12 +71,7 @@ public class IncompleteAdapter extends RecyclerView.Adapter<IncompleteAdapter.To
         todo = mTodos.getIncomplete().get(pos);
         TextView textView = holder.toDoDescription;
         textView.setText(todo.getmDescription());
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(view.getContext(), "You clicked todo at " + pos, Toast.LENGTH_SHORT).show();
-            }
-        });
+
         CheckBox checkBox = holder.checkBox;
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override

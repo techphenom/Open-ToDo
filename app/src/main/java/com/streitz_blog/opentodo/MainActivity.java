@@ -23,6 +23,7 @@ import java.io.File;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     public static final int REQUEST_CODE_WRITE_TO_FILE = 1;
+    public static DataHandling toDoData;
 
     static File location = new File(android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "todo.txt");
 
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         final RecyclerView rvToDoList = findViewById(R.id.toDoList);
-        DataHandling toDoData = new DataHandling();
+        toDoData = new DataHandling();
 
         if (toDoData.getIncomplete().size() == 0)
                 findViewById(R.id.noToDos).setVisibility(View.VISIBLE);

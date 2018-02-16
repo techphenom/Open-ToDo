@@ -24,27 +24,39 @@ public class DataHandling {
     private ArrayList<ToDoItem> incompleteTodos = new ArrayList<>();
     private ArrayList<ToDoItem> completedTodos = new ArrayList<>();
 
-    public DataHandling() {
-        allTodos = parseData(getData(MainActivity.location));
-        for (ToDoItem item: allTodos) {
+    DataHandling() {
+        ArrayList<ToDoItem> temp = parseData(getData(MainActivity.location));
+        for (ToDoItem item: temp) {
             if (item.getmCompleted() == null) {
                 incompleteTodos.add(item);
             } else {
                 completedTodos.add(item);
             }
         };
+        allTodos.addAll(incompleteTodos);
+        allTodos.addAll(completedTodos);
     }
 
-    public ArrayList<ToDoItem> getCompleted() {
+    ArrayList<ToDoItem> getCompleted() {
         return completedTodos;
     }
 
-    public ArrayList<ToDoItem> getIncomplete() {
+    ArrayList<ToDoItem> getIncomplete() {
         return incompleteTodos;
     }
 
     public ArrayList<ToDoItem> getAllTodos() {
         return allTodos;
+    }
+
+    void addNewToDo(ToDoItem item) {
+        allTodos.add(item);
+        incompleteTodos.add(item);
+    }
+
+    void editOldToDo(ToDoItem item, int position) {
+        allTodos.remove(position);
+        allTodos.add(position, item);
     }
 
     public static String getData(File todoTxtLocation) {
@@ -149,7 +161,7 @@ public class DataHandling {
             Log.d(TAG, "getData: didn't write file");
         }
     }
-    public void updateFile(File location) {
+    void updateFile(File location) {
         try {
             FileWriter fileWriter = new FileWriter(location);
             StringBuilder contentsToWrite = new StringBuilder();
