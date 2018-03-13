@@ -64,11 +64,13 @@ public class AddEditActivity extends AppCompatActivity {
 
                     for (String x : editProject.getText().toString().split(",")
                             ) {
-                        projectTags.add(x.trim());
+                        if (!x.isEmpty())
+                            projectTags.add(x.trim());
                     }
                     for (String c : editContext.getText().toString().split(",")
                             ) {
-                        contextTags.add(c.trim());
+                        if (!c.isEmpty())
+                            contextTags.add(c.trim());
                     }
 
                     ToDoItem newTodo = new ToDoItem(null, null, null, creation, description, projectTags, contextTags);
@@ -90,10 +92,12 @@ public class AddEditActivity extends AppCompatActivity {
 
                     for (String x : editProject.getText().toString().split(",")
                             ) {
-                        projectTags.add(x.trim());
+                        if (!x.isEmpty())
+                            projectTags.add(x.trim());
                     }
                     for (String c : editContext.getText().toString().split(",")
                             ) {
+                        if (!c.isEmpty())
                         contextTags.add(c.trim());
                     }
 

@@ -1,5 +1,7 @@
 package com.streitz_blog.opentodo;
 
+import android.util.Log;
+
 import java.util.List;
 
 /**
@@ -9,6 +11,7 @@ import java.util.List;
  */
 
 class ToDoItem {
+    private static final String TAG = "ToDoItem";
 
     private String mCompleted;
     private String mPriority;
@@ -83,7 +86,7 @@ class ToDoItem {
         if (mDescription != null) {
             todo.append(mDescription);
             todo.append(" ");
-        };
+        }
 
         if (!getmTags().isEmpty()) {
             for (String x : getmTags()) {
@@ -98,6 +101,7 @@ class ToDoItem {
                 todo.append(" ");
             }
         }
+        Log.d(TAG, "toString: todo is = " + todo.toString().trim());
 
         return todo.toString().trim();
     }

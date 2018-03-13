@@ -25,6 +25,7 @@
             android:name=".AddEditActivity"
             android:parentActivityName=".AddEditActivity"></activity>
         <activity android:name=".CompletedTodos"></activity>
+        <activity android:name=".SettingsFragment" />
     </application>
 
 </manifest>
