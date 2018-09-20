@@ -2,9 +2,16 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <EditTextPreference
-        android:defaultValue="android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)"
+        android:defaultValue="/storage/emulated/0/Download"
         android:key="edit_text_preference_1"
         android:selectAllOnFocus="true"
         android:singleLine="true"
         android:title="Location of todo.txt" />
+
+    <com.streitz_blog.opentodo.FilePickerSettingsPreference
+        android:key="file_picker"
+        android:title="Location of todo.txt"
+        android:summary="Select your todo file location"
+        android:defaultValue="/storage/emulated/0/Download"/>
+
 </PreferenceScreen>

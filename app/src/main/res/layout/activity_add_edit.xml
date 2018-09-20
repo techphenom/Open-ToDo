@@ -13,7 +13,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Edit your Todo!"
+        android:text="Edit your To Do!"
         android:textAlignment="center"
         android:textSize="24sp"
         android:textStyle="bold"

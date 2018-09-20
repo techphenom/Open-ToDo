@@ -17,15 +17,22 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".AddEditActivity"
-            android:parentActivityName=".AddEditActivity"></activity>
-        <activity android:name=".CompletedTodos"></activity>
-        <activity android:name=".SettingsFragment" />
+            android:parentActivityName=".AddEditActivity" />
+        <activity android:name=".CompletedTodos" />
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.streitz_blog.opentodo.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

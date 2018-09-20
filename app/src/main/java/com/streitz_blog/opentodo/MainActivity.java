@@ -2,9 +2,11 @@ package com.streitz_blog.opentodo;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -25,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_CODE_WRITE_TO_FILE = 1;
     public static DataHandling toDoData;
 
-    static File location = new File(android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "todo.txt");
+    static File location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String syncConnPref = sharedPref.getString("edit_text_preference_1", "");
+        location = new File(syncConnPref, "todo.txt");
 
         // Check for Write Permissions then request them if not.
         if (ContextCompat.checkSelfPermission(this,
@@ -62,6 +68,30 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
+        Button button1 = findViewById(R.id.filePicker);
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // ACTION_OPEN_DOCUMENT is the intent to choose a file via the system's file
+                // browser.
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+
+                // Filter to only show results that can be "opened", such as a
+                // file (as opposed to a list of contacts or timezones)
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+                // Filter to show only images, using the image MIME data type.
+                // If one wanted to search for ogg vorbis files, the type would be "audio/ogg".
+                // To search for all documents available via installed storage providers,
+                // it would be "*/*".
+                intent.setType("image/*");
+
+                startActivityForResult(intent, 42);
+
+            }
+        });
     }
 
     @Override
@@ -80,11 +110,9 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            // Launch the settings fragment
-            getFragmentManager().beginTransaction()
-                    .replace(android.R.id.content, new SettingsFragment())
-                    .commit();
-            return true;
+            // Launch the settings activity
+            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(intent);
         } else if (id == R.id.action_about) {
             AboutDialogFragment frag = new AboutDialogFragment();
             frag.show(getFragmentManager(), "about");
@@ -95,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        Log.d(TAG, "onResume: starts");
         super.onResume();
 
         final RecyclerView rvToDoList = findViewById(R.id.toDoList);
